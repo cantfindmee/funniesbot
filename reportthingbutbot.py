@@ -62,22 +62,10 @@ async def thing7(interaction: discord.Interaction, user: str, reason: str):
     await interaction.response.send_message("Reported user " + user + " for " + reason + ".", ephermal=True)
     channel = client.get_channel(MODERATORCHANNEL_ID)
     await channel.send('user ' + user + ' reported for reason "' + reason + '".')
-@client.tree.command(name="banuser", description="ban people", guild=discord.Object(id=GUILD_ID))
-@app_commands.describe(user="user")
-@app_commands.describe(reason="reason")
-async def thing8(interaction: discord.Interaction, user: discord.Member, reason: str):
-    await user.ban(reason=reason)
-    channel = client.get_channel(MODERATORCHANNEL_ID)
-    await channel.send('user ' + user + ' was banned for reason "' + reason + '".')
-@client.tree.command(name="kickuser", description="kick people", guild=discord.Object(id=GUILD_ID))
-@app_commands.describe(user="user")
-@app_commands.describe(reason="reason")
-async def thing9(interaction: discord.Interaction, user: discord.Member, reason: str):
-    await user.kick(reason=reason)
 @client.tree.command(name="warnuser", description="warn people", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(user="user")
 @app_commands.describe(reason="reason")
-async def thing10(interaction: discord.Interaction, user: discord.Member, reason: str):
+async def thing8(interaction: discord.Interaction, user: discord.Member, reason: str):
     dmmer = await user.create_dm()
     await dmmer.send("You have been warned in server " + interaction.guild.name + " for reason " + reason)
     channel = client.get_channel(MODERATORCHANNEL_ID)
@@ -86,12 +74,12 @@ async def thing10(interaction: discord.Interaction, user: discord.Member, reason
 @client.tree.command(name="variable", description="set variable", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(variable="variable")
 @app_commands.describe(value="value")
-async def thing11(interaction: discord.Interaction, variable: str, value: str):
+async def thing9(interaction: discord.Interaction, variable: str, value: str):
     variables[variable] = value
     await interaction.response.send_message("OK", ephemeral=True)
 @client.tree.command(name="sayvariable", description="say variable", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(variable="variable")
-async def thing12(interaction: discord.Interaction, variable: str):
+async def thing10(interaction: discord.Interaction, variable: str):
     if variable in variables:
         value = variables[variable]
         await interaction.response.send_message(value)
