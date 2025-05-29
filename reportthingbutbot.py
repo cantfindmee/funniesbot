@@ -3,6 +3,7 @@ from discord import app_commands
 import ollama
 #import webbrowser
 import random
+import requests
 from typing import Literal
 GUILD_ID = # insert server id here
 MODERATORCHANNEL_ID = # insert moderator only channel id here
@@ -85,6 +86,16 @@ async def thing10(interaction: discord.Interaction, variable: str):
         await interaction.response.send_message(value)
     else:
         await interaction.response.send_message("undefined")
+@client.tree.command(name="randomshiggy", description="get random shiggy", guild=discord.Object(id=GUILD_ID))
+async def thing11(interaction: discord.Interaction):
+    await interaction.response.send_message("https://shig.lilyy.gay/api/v3/random")
+@client.tree.command(name="randomcat", description="get random cat", guild=discord.Object(id=GUILD_ID))
+async def thing12(interaction: discord.Interaction):
+    r=requests.get("https://api.thecatapi.com/v1/images/search?api-key=live_CCU08EiUzbpqM5XuH0eiCvTaZpYuKpH2F3jZShYgTMBjod2dwgrn8LJpinRaFQDi")
+    bleh=r.json()
+    blehh=bleh[0]["url"]
+    await interaction.response.send_message(blehh)
+
 client.run("token")
 
 
