@@ -86,10 +86,9 @@ async def thing10(interaction: discord.Interaction, user: discord.Member, reason
 @client.tree.command(name="variable", description="set variable", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(variable="variable")
 @app_commands.describe(value="value")
-async def thing10(interaction: discord.Interaction, variable: str, value: str):
+async def thing11(interaction: discord.Interaction, variable: str, value: str):
     variables[variable] = value
     await interaction.response.send_message("OK", ephemeral=True)
-<<<<<<< HEAD
 @client.tree.command(name="sayvariable", description="say variable", guild=discord.Object(id=GUILD_ID))
 @app_commands.describe(variable="variable")
 async def thing12(interaction: discord.Interaction, variable: str):
@@ -98,8 +97,6 @@ async def thing12(interaction: discord.Interaction, variable: str):
         await interaction.response.send_message(value)
     else:
         await interaction.response.send_message("undefined")
-=======
->>>>>>> parent of ca7e5fc (variables part 2, unfuck shit, sorry if 0.1.0 is broken, basically just unfuckery of fucked fuckshit)
 client.run("token")
 
 
