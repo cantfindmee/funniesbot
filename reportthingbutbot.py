@@ -4,6 +4,7 @@ import ollama
 #import webbrowser
 import random
 import requests
+import asyncio
 from typing import Literal
 GUILD_ID = # insert server id here
 MODERATORCHANNEL_ID = # insert moderator only channel id here
@@ -95,6 +96,14 @@ async def thing12(interaction: discord.Interaction):
     bleh=r.json()
     blehh=bleh[0]["url"]
     await interaction.response.send_message(blehh)
+@client.tree.command(name="5912", description="number 5912 is the best!", guild=discord.Object(id=GUILD_ID))
+async def thing12(interaction: discord.Interaction):
+    await interaction.response.send_message("0000")
+    fivenineonetwo = [1000, 2000, 3000, 4000, 5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900, 5910, 5911, 5912]
+    green = await interaction.original_response()
+    for onezerozerofzerof in fivenineonetwo:
+        await green.edit(content=str(onezerozerofzerof))
+        await asyncio.sleep(1)
 
 client.run("token")
 
