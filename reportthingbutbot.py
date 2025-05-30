@@ -97,7 +97,7 @@ async def thing12(interaction: discord.Interaction):
     blehh=bleh[0]["url"]
     await interaction.response.send_message(blehh)
 @client.tree.command(name="5912", description="number 5912 is the best!", guild=discord.Object(id=GUILD_ID))
-async def thing12(interaction: discord.Interaction):
+async def thing13(interaction: discord.Interaction):
     await interaction.response.send_message("0000")
     fivenineonetwo = [1000, 2000, 3000, 4000, 5000, 5100, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900, 5910, 5911, 5912]
     green = await interaction.original_response()
