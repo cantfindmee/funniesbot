@@ -6,21 +6,19 @@ import random
 import requests
 import asyncio
 from typing import Literal
-GUILD_ID = 933698191315062864 # insert server id here
-MODERATORCHANNEL_ID = 1292868014571786294 # insert moderator only channel id here
+MODERATORCHANNEL_ID = 1362597562053562539 # insert moderator only channel id here
 variables = {}
 class thing1(discord.Client):
     def __init__(self):
-        super().__init__(intents=discord.Intents.default())
+        super().__init__(intents=discord.Intents.all())
         self.tree = discord.app_commands.CommandTree(self)
 
     async def on_ready(self):
-        guild = discord.Object(id=GUILD_ID)
-        await self.tree.sync(guild=guild)
+        await self.tree.sync()
         print(f"logged in as {self.user}")
 
 client = thing1()
-@client.tree.command(name="jarvis", description="talk to llama", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="jarvis", description="talk to llama")
 @app_commands.describe(string="input string")
 async def thing3(interaction: discord.Interaction, string: str):
     await interaction.response.defer()
@@ -32,17 +30,17 @@ async def thing3(interaction: discord.Interaction, string: str):
     await interaction.followup.send(response['message']['content'])
     messages = []
 
-# @client.tree.command(name="browser", description="open a link for me", guild=discord.Object(id=GUILD_ID))
+# @client.tree.command(name="browser", description="open a link for me")
 # @app_commands.describe(thing2="input string")
 # async def thing4(interaction: discord.Interaction, thing2: str):
 #     webbrowser.open(thing2)
 
-@client.tree.command(name="echothing", description="echo something", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="echothing", description="echo something")
 @app_commands.describe(string="input string")
 async def thing5(interaction: discord.Interaction, string: str):
     await interaction.response.send_message(string)
 
-@client.tree.command(name="gamble", description="gamble", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="gamble", description="gamble")
 @app_commands.describe(blackorred="what do you choose?")
 async def thing6(interaction: discord.Interaction, blackorred: Literal["black", "red"]):
     numbers = list(range(0, 37))
@@ -51,20 +49,20 @@ async def thing6(interaction: discord.Interaction, blackorred: Literal["black", 
     result = random.choice(numbers)
     print(result)
     if blackorred.lower() == "red" and result in red_numbers:
-        await interaction.response.send_message("you won")
+        await interaction.response.send_message("the ball landed on " + str(result) + ". you won")
     elif blackorred.lower() == "black" and result in black_numbers:
-        await interaction.response.send_message("you won")
+        await interaction.response.send_message("the ball landed on " + str(result) + ". you won")
     else:
-        await interaction.response.send_message("you lost")
+        await interaction.response.send_message("the ball landed on " + str(result) + ". you lost")
 
-@client.tree.command(name="report", description="report people", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="report", description="report people")
 @app_commands.describe(user="user")
 @app_commands.describe(reason="reason")
 async def thing7(interaction: discord.Interaction, user: str, reason: str):
     await interaction.response.send_message("Reported user " + user + " for " + reason + ".", ephermal=True)
     channel = client.get_channel(MODERATORCHANNEL_ID)
     await channel.send('user ' + user + ' reported for reason "' + reason + '".')
-@client.tree.command(name="warnuser", description="warn people", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="warnuser", description="warn people")
 @app_commands.describe(user="user")
 @app_commands.describe(reason="reason")
 async def thing8(interaction: discord.Interaction, user: discord.Member, reason: str):
@@ -73,13 +71,13 @@ async def thing8(interaction: discord.Interaction, user: discord.Member, reason:
     channel = client.get_channel(MODERATORCHANNEL_ID)
     await channel.send('user ' + str(user) + ' was warned for reason "' + reason + '".')
     await interaction.response.send_message("OK", ephemeral=True)
-@client.tree.command(name="variable", description="set variable", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="variable", description="set variable")
 @app_commands.describe(variable="variable")
 @app_commands.describe(value="value")
 async def thing9(interaction: discord.Interaction, variable: str, value: str):
     variables[variable] = value
     await interaction.response.send_message("OK", ephemeral=True)
-@client.tree.command(name="sayvariable", description="say variable", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="sayvariable", description="say variable")
 @app_commands.describe(variable="variable")
 async def thing10(interaction: discord.Interaction, variable: str):
     if variable in variables:
@@ -87,10 +85,10 @@ async def thing10(interaction: discord.Interaction, variable: str):
         await interaction.response.send_message(value)
     else:
         await interaction.response.send_message("undefined")
-@client.tree.command(name="randomshiggy", description="get random shiggy", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="randomshiggy", description="get random shiggy")
 async def thing11(interaction: discord.Interaction):
     await interaction.response.send_message("https://shig.lilyy.gay/api/v3/random")
-@client.tree.command(name="randomcat", description="get random cat", guild=discord.Object(id=GUILD_ID))
+@client.tree.command(name="randomcat", description="get random cat")
 async def thing12(interaction: discord.Interaction):
     r=requests.get("https://api.thecatapi.com/v1/images/search?api-key=live_CCU08EiUzbpqM5XuH0eiCvTaZpYuKpH2F3jZShYgTMBjod2dwgrn8LJpinRaFQDi")
     bleh=r.json()
