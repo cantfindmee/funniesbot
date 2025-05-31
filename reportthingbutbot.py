@@ -5,6 +5,7 @@ import ollama
 import random
 import requests
 import asyncio
+import subprocess
 from typing import Literal
 MODERATORCHANNEL_ID = 1362597562053562539 # insert moderator only channel id here
 variables = {}
@@ -102,6 +103,11 @@ async def thing13(interaction: discord.Interaction):
     for onezerozerofzerof in fivenineonetwo:
         await green.edit(content=str(onezerozerofzerof))
         await asyncio.sleep(1)
+@client.tree.command(name="maze", description="generate a 15x15 maze")
+async def thing14(interaction: discord.Interaction):
+    thing = subprocess.check_output("maze 15x15", shell=True, text=True)
+    await interaction.response.send_message(thing)
+
 
 client.run("token")
 
