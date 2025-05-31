@@ -1,6 +1,6 @@
 # the funnies bot
 
-the funnies bot is a bot with fake gambling, talking to ai, reporting, warning, kicking and banning people.
+the funnies bot is a bot with fake gambling, talking to ai, reporting, and cats.
 
 special fuck you's:<br/>
 putin<br/>
