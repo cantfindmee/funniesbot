@@ -7,8 +7,8 @@ import requests
 import asyncio
 import subprocess
 from typing import Literal
-MODERATORCHANNEL_ID = 1362597562053562539 # insert moderator only channel id here
 variables = {}
+guild_configs = {}
 class thing1(discord.Client):
     def __init__(self):
         super().__init__(intents=discord.Intents.all())
@@ -67,9 +67,13 @@ async def thing7(interaction: discord.Interaction, user: str, reason: str):
 @app_commands.describe(user="user")
 @app_commands.describe(reason="reason")
 async def thing8(interaction: discord.Interaction, user: discord.Member, reason: str):
+    if any(role.name != "Admin" for role in interaction.user.roles):
+        await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
+        return
     dmmer = await user.create_dm()
     await dmmer.send("You have been warned in server " + interaction.guild.name + " for reason " + reason)
-    channel = client.get_channel(MODERATORCHANNEL_ID)
+    channel = client.get_channel(int(guild_configs[interaction.guild.id].get("moderator_channel_id")))
+    print(int(guild_configs[interaction.guild.id].get("moderator_channel_id")))
     await channel.send('user ' + str(user) + ' was warned for reason "' + reason + '".')
     await interaction.response.send_message("OK", ephemeral=True)
 @client.tree.command(name="variable", description="set variable")
@@ -107,7 +111,18 @@ async def thing13(interaction: discord.Interaction):
 async def thing14(interaction: discord.Interaction):
     thing = subprocess.check_output("maze 15x15", shell=True, text=True)
     await interaction.response.send_message(thing)
+@client.tree.command(name="config", description="configure the bot")
+@app_commands.describe(channelid="moderator channel id")
+async def thing15(interaction: discord.Interaction, channelid: str):
+    if any(role.name != "Admin" for role in interaction.user.roles):
+        await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
+        return
+    guild_id = interaction.guild.id
+    guild_configs[guild_id] = {
+        "moderator_channel_id": channelid,
+    }
 
+    await interaction.response.send_message("Configuration updated successfully.", ephemeral=True)
 
 client.run("token")
 
