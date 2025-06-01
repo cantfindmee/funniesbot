@@ -4,11 +4,19 @@ import ollama
 #import webbrowser
 import random
 import requests
+import sqlite3
 import asyncio
 import subprocess
 from typing import Literal
 variables = {}
 guild_configs = {}
+db = sqlite3.connect("config.db")
+cursor = db.cursor()
+cursor.execute('''CREATE TABLE IF NOT EXISTS config (
+    guild_id INTEGER PRIMARY KEY,
+    moderator_channel_id TEXT
+)''')
+db.commit()
 class thing1(discord.Client):
     def __init__(self):
         super().__init__(intents=discord.Intents.all())
@@ -60,20 +68,29 @@ async def thing6(interaction: discord.Interaction, blackorred: Literal["black", 
 @app_commands.describe(user="user")
 @app_commands.describe(reason="reason")
 async def thing7(interaction: discord.Interaction, user: str, reason: str):
-    await interaction.response.send_message("Reported user " + user + " for " + reason + ".", ephermal=True)
-    channel = client.get_channel(MODERATORCHANNEL_ID)
+    await interaction.response.send_message("Reported user " + user + " for " + reason + ".", ephemeral=True)
+    cursor.execute("SELECT moderator_channel_id FROM config WHERE guild_id = ?", (interaction.guild.id,))
+    row = cursor.fetchone()
+    if row is None:
+        await interaction.response.send_message("No config found.", ephemeral=True)
+        return
+    channel = client.get_channel(int(row[0]))
     await channel.send('user ' + user + ' reported for reason "' + reason + '".')
 @client.tree.command(name="warnuser", description="warn people")
 @app_commands.describe(user="user")
 @app_commands.describe(reason="reason")
 async def thing8(interaction: discord.Interaction, user: discord.Member, reason: str):
-    if any(role.name != "Admin" for role in interaction.user.roles):
+    if not any(role.name == "Admin" for role in interaction.user.roles):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
         return
     dmmer = await user.create_dm()
     await dmmer.send("You have been warned in server " + interaction.guild.name + " for reason " + reason)
-    channel = client.get_channel(int(guild_configs[interaction.guild.id].get("moderator_channel_id")))
-    print(int(guild_configs[interaction.guild.id].get("moderator_channel_id")))
+    cursor.execute("SELECT moderator_channel_id FROM config WHERE guild_id = ?", (interaction.guild.id,))
+    row = cursor.fetchone()
+    if row is None:
+        await interaction.response.send_message("No config found.", ephemeral=True)
+        return
+    channel = client.get_channel(int(row[0]))
     await channel.send('user ' + str(user) + ' was warned for reason "' + reason + '".')
     await interaction.response.send_message("OK", ephemeral=True)
 @client.tree.command(name="variable", description="set variable")
@@ -114,13 +131,11 @@ async def thing14(interaction: discord.Interaction):
 @client.tree.command(name="config", description="configure the bot")
 @app_commands.describe(channelid="moderator channel id")
 async def thing15(interaction: discord.Interaction, channelid: str):
-    if any(role.name != "Admin" for role in interaction.user.roles):
+    if not any(role.name == "Admin" for role in interaction.user.roles):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
         return
-    guild_id = interaction.guild.id
-    guild_configs[guild_id] = {
-        "moderator_channel_id": channelid,
-    }
+    cursor.execute("REPLACE INTO config (guild_id, moderator_channel_id) VALUES (?, ?)", (interaction.guild.id, channelid))
+    db.commit()
 
     await interaction.response.send_message("Configuration updated successfully.", ephemeral=True)
 
