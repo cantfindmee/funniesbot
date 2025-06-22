@@ -4,6 +4,14 @@ litterally like the only bot that is open source and easy to install
 
 just open install.sh
 
+then put your token into it
+
+and make an admin role for your admins
+
+and set your warns channel with the config command
+
+llama 3.2 might not install because meta is stupid so just do it yourself
+
 thats it</br>
 i guess
 
