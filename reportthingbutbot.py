@@ -12,6 +12,9 @@ from selenium.webdriver.firefox.options import Options
 from selenium import webdriver
 from selenium.common.exceptions import InvalidArgumentException
 from typing import Literal
+import time
+import ollama
+from dotenv import load_dotenv, dotenv_values
 
 variables = {}
 guild_configs = {}
@@ -27,9 +30,12 @@ class thing1(discord.Client):
         super().__init__(intents=discord.Intents.all())
         self.tree = discord.app_commands.CommandTree(self)
 
-    async def on_ready(self):
+    async def setup_hook(self):
         await self.tree.sync()
+
+    async def on_ready(self):
         print(f"logged in as {self.user}")
+
 
 client = thing1()
 @client.tree.command(name="jarvis", description="talk to llama")
@@ -117,7 +123,7 @@ async def thing11(interaction: discord.Interaction):
     await interaction.response.send_message("https://shig.lilyy.gay/api/v3/random")
 @client.tree.command(name="randomcat", description="get random cat")
 async def thing12(interaction: discord.Interaction):
-    r=requests.get("https://api.thecatapi.com/v1/images/search?api-key=live_CCU08EiUzbpqM5XuH0eiCvTaZpYuKpH2F3jZShYgTMBjod2dwgrn8LJpinRaFQDi")
+    r=requests.get("https://api.thecatapi.com/v1/images/search?api-key=" + os.getenv("catapikey"))
     bleh=r.json()
     blehh=bleh[0]["url"]
     await interaction.response.send_message(blehh)
@@ -164,8 +170,18 @@ async def thing17(interaction: discord.Interaction, string: str):
     messages = []
 @client.tree.command(name="screenshot", description="screenshot a website")
 @app_commands.describe(url="input url")
-async def thing18(interaction: discord.Interaction, url: str):
+@app_commands.describe(wait="time to wait")
+async def thing18(interaction: discord.Interaction, url: str, wait: int):
     await interaction.response.defer()
+    messages = [
+        {"role": "system", "content": "You are an ai that checks whether links are safe or inappropriate. ONLY output true with an explanation on why the site is inappropriate after. if the link is inappropriate, output true with an explanation, otherwise output just what you think of the site. also output true if its illegal or unethical."},
+        {"role": "user", "content": url}
+    ]
+    response = ollama.chat(model='llama3.2', messages=messages)
+    print(response['message']['content'])
+    if str(response['message']['content']).find("True") != -1:
+        await interaction.followup.send(f"{response['message']['content']}")
+        return
     try:
         options = Options()
         options.add_argument('--headless')
@@ -173,14 +189,26 @@ async def thing18(interaction: discord.Interaction, url: str):
 
         guhh = webdriver.Firefox(options=options)
         guhh.get(url)
+        time.sleep(wait)
 
         guhh.save_screenshot('/tmp/screenshot.png')
         guhh.quit()
         await interaction.followup.send(file=discord.File("/tmp/screenshot.png"))
+        await interaction.followup.send(f"{response['message']['content']}")
     except Exception as thing1:
         await interaction.followup.send(f"error loading url: {thing1}")
+@client.tree.command(name="action")
+@app_commands.describe(user2="select a user")
+@app_commands.describe(action="do thing")
+@app_commands.describe(user1="user 1")
+@app_commands.describe(link="image link")
+async def thing19(interaction: discord.Interaction, user: str, guh: str, user1: str, link: str):
+    thing2342324 = discord.Embed(description=f"**{shitfucker}** {guh} **{user}**!")
+    thing2342324.set_image(url=link)
+    await interaction.response.send_message(embed=thing2342324)
 
 
-client.run("token")
+
+client.run(os.getenv("token"))
 
 
