@@ -2,11 +2,13 @@
 
 litterally like the only bot that is open source and easy to install
 
-just open install.sh
+just put your token into catapi.env like this
 
-then put your token into it
+token = "token"
+catapikey = "catapikey"
 
-and make an admin role for your admins
+
+and make an Admin role for your admins
 
 and set your warns channel with the config command
 
