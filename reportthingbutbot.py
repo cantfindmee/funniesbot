@@ -145,7 +145,7 @@ async def thing14(interaction: discord.Interaction):
 @client.tree.command(name="config", description="configure the bot")
 @app_commands.describe(channelid="moderator channel id")
 async def thing15(interaction: discord.Interaction, channelid: str):
-    if not any(role.name == "Admin" for role in interaction.user.roles):
+    if not any(role.name == "Admin" for role in interaction.guild.get_member(interaction.user.id).roles):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
         return
     cursor.execute("REPLACE INTO config (guild_id, moderator_channel_id) VALUES (?, ?)", (interaction.guild.id, channelid))
